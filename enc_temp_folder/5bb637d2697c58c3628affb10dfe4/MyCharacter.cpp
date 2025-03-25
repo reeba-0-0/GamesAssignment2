@@ -87,17 +87,3 @@ void AMyCharacter::LookUpHandler(const FInputActionValue& Value)
 	AddControllerPitchInput(Value.Get<float>());
 }
 
-void AMyCharacter::PushHandler(const FInputActionValue& Value)
-{
-
-}
-
-void AMyCharacter::DiveHandler(const FInputActionValue& Value)
-{
-
-}
-
-//void AMyCharacter::Server_Dive_Implementation()
-//{
-//}
-
