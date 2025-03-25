@@ -9,8 +9,6 @@ AMyActor::AMyActor()
 
 	// Enable replication for the actor
 	bReplicates = true;
-	// Update frequency for smooth performance
-	NetUpdateFrequency = 5.f;
 
 	// Set default rotation speed
 	RotationSpeed = 200.f;
@@ -20,6 +18,12 @@ AMyActor::AMyActor()
 void AMyActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		SetReplicates(true);
+		SetReplicateMovement(true);
+	}
 }
 
 // Called every frame
@@ -27,12 +31,13 @@ void AMyActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (GetLocalRole() == ROLE_SimulatedProxy)
+	if (HasAuthority())
 	{
-		// Calculate the rotation amount based on the rotation speed
-		FRotator RotateZ = FRotator(0.f, RotationSpeed, 0.f);
+		FRotator currentRotation = GetActorRotation();
 
-		AddActorLocalRotation(RotateZ * DeltaTime);
+		currentRotation.Yaw += RotationSpeed;
+
+		AddActorLocalRotation(currentRotation * DeltaTime);
 	}
 }
 

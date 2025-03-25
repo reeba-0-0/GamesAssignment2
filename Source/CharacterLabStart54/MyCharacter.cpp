@@ -23,9 +23,6 @@ AMyCharacter::AMyCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Pawn Camera"));
 	Camera->SetupAttachment(SpringArm);
-
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
-
 }
 
 // Called when the game starts or when spawned

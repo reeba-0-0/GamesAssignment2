@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// The speed of rotation (will be replicated)
-	UPROPERTY(ReplicatedUsing = OnRep_RotationSpeed)
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_RotationSpeed)
 	float RotationSpeed;
 
 	// The function that will be called when the RotationSpeed property changes
