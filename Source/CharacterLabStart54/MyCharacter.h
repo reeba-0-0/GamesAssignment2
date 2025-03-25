@@ -75,15 +75,20 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_Dive();
 
+public:
+
+	UFUNCTION(Server, Reliable)
+	void Server_Push(ACharacter* TargetCharacter);
 
 	UFUNCTION(Client, Reliable)
-	void Client_Push();
-
-public:
+	void Client_PlaySound();
 
 	FVector LastPos = FVector(0, 0, 0);
 
 private:
+
+	bool bInSafeZone = false;
+
 	UPROPERTY(EditAnywhere)
 	float launchForce = 1000.f;
 
@@ -94,6 +99,10 @@ private:
 
 	FTimerHandle DiveCooldownHandle;
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* Sound;
+
 	UFUNCTION()
 	void ResetDive();
+
 };

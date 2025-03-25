@@ -9,12 +9,17 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h" 
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	bReplicates = true;
+	
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
@@ -23,6 +28,9 @@ AMyCharacter::AMyCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Pawn Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
 }
 
 // Called when the game starts or when spawned
@@ -61,29 +69,104 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EIC->BindAction(LookUpAction, ETriggerEvent::Triggered, this, &AMyCharacter::LookUpHandler);
 	EIC->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AMyCharacter::TurnHandler);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	EIC->BindAction(PushAction, ETriggerEvent::Triggered, this, &AMyCharacter::PushHandler);
+	EIC->BindAction(DiveAction, ETriggerEvent::Triggered, this, &AMyCharacter::DiveHandler);
 }
 
 
 void AMyCharacter::MoveForwardHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Forward Triggered value is: %f"), Value.Get<float>());
 	AddMovementInput(GetActorForwardVector() * Value.Get<float>());
 }
 
 void AMyCharacter::StrafeHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Strafe Triggered value is: %f"), Value.Get<float>());
 	AddMovementInput(GetActorRightVector() * Value.Get<float>());
 }
 
 void AMyCharacter::TurnHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turn Triggered value is: %f"), Value.Get<float>());
 	AddControllerYawInput(Value.Get<float>());
 }
 
 void AMyCharacter::LookUpHandler(const FInputActionValue& Value)
 {
 	AddControllerPitchInput(Value.Get<float>());
+}
+
+void AMyCharacter::PushHandler(const FInputActionValue& Value)
+{
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = Start + (ForwardVector * 100.0f); // 100 cm forward
+
+	FHitResult Hit;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); // Ignore self
+
+	// Perform line trace
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Pawn, Params);
+
+	if (bHit)
+	{
+		AMyCharacter* TargetCharacter = Cast<AMyCharacter>(Hit.GetActor());
+
+		if (TargetCharacter)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Push hit: %s"), *TargetCharacter->GetName());
+
+			// Call Client_Push on the target character
+			TargetCharacter->Server_Push(TargetCharacter);
+		}
+	}
+
+	// Debug line (optional)
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 2.0f);
+}
+
+void AMyCharacter::DiveHandler(const FInputActionValue& Value)
+{
+	Server_Dive();
+}
+
+void AMyCharacter::Server_Dive_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_Dive executed on the server"));
+
+	if (!bCanDive) return; // Prevent spamming
+	bCanDive = false; // Disable diving
+
+	UE_LOG(LogTemp, Warning, TEXT("Server_Dive executed on the server"));
+
+	FVector DiveForce = GetActorForwardVector() * launchForce;
+	LaunchCharacter(DiveForce, true, false);
+
+	// Set a cooldown before the player can dive again
+	GetWorldTimerManager().SetTimer(DiveCooldownHandle, this, &AMyCharacter::ResetDive, diveCooldown, false);
+	
+}
+
+void AMyCharacter::Client_PlaySound()
+{
+	if (Sound) 
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+	}
+}
+
+void AMyCharacter::ResetDive()
+{
+	bCanDive = true;
+	UE_LOG(LogTemp, Warning, TEXT("Dive cooldown reset"));
+}
+
+void AMyCharacter::Server_Push_Implementation(ACharacter* TargetCharacter)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Client_Push executed on the client"));
+
+	FVector PushDirection = TargetCharacter->GetActorForwardVector() * -1000.0f; // Push backward
+	TargetCharacter->LaunchCharacter(PushDirection, true, false);
+
+	UE_LOG(LogTemp, Warning, TEXT("%s was pushed!"), *TargetCharacter->GetName());
 }
 

@@ -57,13 +57,52 @@ private:
 	UPROPERTY(EditAnywhere)
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere)
+	UInputAction* PushAction;
+
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* DiveAction;
+
 	void MoveForwardHandler(const FInputActionValue& Value);
 	void StrafeHandler(const FInputActionValue& Value);
 	void TurnHandler(const FInputActionValue& Value);
 	void LookUpHandler(const FInputActionValue& Value);
+	void PushHandler(const FInputActionValue& Value);
+	void DiveHandler(const FInputActionValue& Value);
+
+
+	UFUNCTION(Server, Reliable)
+	void Server_Dive();
 
 public:
 
+	UFUNCTION(Server, Reliable)
+	void Server_Push(ACharacter* TargetCharacter);
+
+	UFUNCTION(Exec)
+	void Client_PlaySound();
+
 	FVector LastPos = FVector(0, 0, 0);
+
+private:
+
+	bool bInSafeZone = false;
+
+	UPROPERTY(EditAnywhere)
+	float launchForce = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float diveCooldown = 1.f;
+
+	bool bCanDive = true;
+
+	FTimerHandle DiveCooldownHandle;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* Sound;
+
+	UFUNCTION()
+	void ResetDive();
 
 };

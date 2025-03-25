@@ -13,5 +13,8 @@ UCLASS()
 class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+	UFUNCTION(Exec)
+	void Win();
 	
 };

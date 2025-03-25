@@ -47,8 +47,6 @@ void AFallOfLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		if (player)
 		{
 			player->SetActorLocation(player->LastPos);
-
-			player->Client_PlaySound();
 		}
 
     }

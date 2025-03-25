@@ -21,7 +21,7 @@ void UMyGameInstance::HostGame()
     if (World)
     {
         // open level as listen server (allows others to join)
-        World->ServerTravel("/Game/Content/Level2?listen"); 
+        World->ServerTravel("/Game/Content/BasicLevel?listen"); 
         UE_LOG(LogTemp, Warning, TEXT("Hosting Game..."));
     }
 }
