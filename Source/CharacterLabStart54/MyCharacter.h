@@ -85,9 +85,9 @@ public:
 
 	FVector LastPos = FVector(0, 0, 0);
 
+	bool bInSafeZone = false;
 private:
 
-	bool bInSafeZone = false;
 
 	UPROPERTY(EditAnywhere)
 	float launchForce = 1000.f;
