@@ -61,24 +61,23 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EIC->BindAction(LookUpAction, ETriggerEvent::Triggered, this, &AMyCharacter::LookUpHandler);
 	EIC->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AMyCharacter::TurnHandler);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	EIC->BindAction(PushAction, ETriggerEvent::Triggered, this, &AMyCharacter::PushHandler);
+	EIC->BindAction(DiveAction, ETriggerEvent::Triggered, this, &AMyCharacter::DiveHandler);
 }
 
 
 void AMyCharacter::MoveForwardHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Forward Triggered value is: %f"), Value.Get<float>());
 	AddMovementInput(GetActorForwardVector() * Value.Get<float>());
 }
 
 void AMyCharacter::StrafeHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Strafe Triggered value is: %f"), Value.Get<float>());
 	AddMovementInput(GetActorRightVector() * Value.Get<float>());
 }
 
 void AMyCharacter::TurnHandler(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turn Triggered value is: %f"), Value.Get<float>());
 	AddControllerYawInput(Value.Get<float>());
 }
 
@@ -89,15 +88,39 @@ void AMyCharacter::LookUpHandler(const FInputActionValue& Value)
 
 void AMyCharacter::PushHandler(const FInputActionValue& Value)
 {
-
+	Client_Push();
 }
 
 void AMyCharacter::DiveHandler(const FInputActionValue& Value)
 {
-
+	Server_Dive();
 }
 
-//void AMyCharacter::Server_Dive_Implementation()
-//{
-//}
+void AMyCharacter::Server_Dive_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_Dive executed on the server"));
+
+	if (!bCanDive) return; // Prevent spamming
+	bCanDive = false; // Disable diving
+
+	UE_LOG(LogTemp, Warning, TEXT("Server_Dive executed on the server"));
+
+	FVector DiveForce = GetActorForwardVector() * launchForce;
+	LaunchCharacter(DiveForce, true, false);
+
+	// Set a cooldown before the player can dive again
+	GetWorldTimerManager().SetTimer(DiveCooldownHandle, this, &AMyCharacter::ResetDive, diveCooldown, false);
+	
+}
+
+void AMyCharacter::ResetDive()
+{
+	bCanDive = true;
+	UE_LOG(LogTemp, Warning, TEXT("Dive cooldown reset"));
+}
+
+void AMyCharacter::Client_Push_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Client_Push executed on the client"));
+}
 

@@ -72,15 +72,28 @@ private:
 	void DiveHandler(const FInputActionValue& Value);
 
 
-	//UFUNCTION(Server, Reliable)
-	//void Server_Dive();
+	UFUNCTION(Server, Reliable)
+	void Server_Dive();
 
 
-	//UFUNCTION(Client, Reliable)
-	//void Client_Push();
+	UFUNCTION(Client, Reliable)
+	void Client_Push();
 
 public:
 
 	FVector LastPos = FVector(0, 0, 0);
 
+private:
+	UPROPERTY(EditAnywhere)
+	float launchForce = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float diveCooldown = 1.f;
+
+	bool bCanDive = true;
+
+	FTimerHandle DiveCooldownHandle;
+
+	UFUNCTION()
+	void ResetDive();
 };
