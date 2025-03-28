@@ -34,11 +34,6 @@ AMyCharacter::AMyCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-
-	niagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
-	niagaraComponent->SetupAttachment(RootComponent);
-	niagaraComponent->SetAutoActivate(false); 
-
 }
 
 // Called when the game starts or when spawned
@@ -54,11 +49,6 @@ void AMyCharacter::BeginPlay()
 		Subsystem->AddMappingContext(characterMappingContext, 0);
 	}
 	
-	if (niagaraComponent)
-	{
-		niagaraComponent->Activate(); // Trigger the effect
-	}
-
 	lastPos = GetActorLocation();
 }
 
