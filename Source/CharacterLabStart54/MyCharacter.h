@@ -5,12 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "FallOfLevel.h"
 #include "MyCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
 class UInputAction;
+class AFallOffLevel;
 
 UCLASS()
 class CHARACTERLABSTART54_API AMyCharacter : public ACharacter
@@ -28,6 +30,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	/*void OnLanded(const FHitResult& Hit) override;*/
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -83,9 +87,11 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_PlaySound();
 
-	FVector LastPos = FVector(0, 0, 0);
+	FVector lastPos;
 
 	bool bInSafeZone = false;
+
+	bool bFalling = false;
 private:
 
 
@@ -97,12 +103,13 @@ private:
 
 	bool bCanDive = true;
 
-	FTimerHandle DiveCooldownHandle;
+	FTimerHandle diveCooldownHandle;
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* Sound;
 
 	UFUNCTION()
 	void ResetDive();
-
+	
+	AFallOffLevel* fallRef;
 };

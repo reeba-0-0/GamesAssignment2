@@ -11,7 +11,7 @@ AMyActor::AMyActor()
 	bReplicates = true;
 
 	// Set default rotation speed
-	RotationSpeed = 200.f;
+	rotationSpeed = 200.f;
 }
 
 // Called when the game starts or when spawned
@@ -35,7 +35,7 @@ void AMyActor::Tick(float DeltaTime)
 	{
 		FRotator currentRotation = GetActorRotation();
 
-		currentRotation.Yaw += RotationSpeed;
+		currentRotation.Yaw += rotationSpeed;
 
 		AddActorLocalRotation(currentRotation * DeltaTime);
 	}
@@ -47,12 +47,12 @@ void AMyActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// Replicate the RotationSpeed variable
-	DOREPLIFETIME(AMyActor, RotationSpeed);
+	DOREPLIFETIME(AMyActor, rotationSpeed);
 }
 
 // Called when the RotationSpeed property is updated
 void AMyActor::OnRep_RotationSpeed()
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("RotationSpeed updated to: %f"), RotationSpeed);
+	UE_LOG(LogTemp, Warning, TEXT("RotationSpeed updated to: %f"), rotationSpeed);
 }

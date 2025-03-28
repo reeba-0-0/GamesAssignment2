@@ -23,7 +23,7 @@ public:
 
 	// The speed of rotation (will be replicated)
 	UPROPERTY(Replicated, ReplicatedUsing = OnRep_RotationSpeed)
-	float RotationSpeed;
+	float rotationSpeed;
 
 	// The function that will be called when the RotationSpeed property changes
 	UFUNCTION()

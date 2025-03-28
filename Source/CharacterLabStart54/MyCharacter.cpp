@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h" 
 #include "Kismet/GameplayStatics.h"
+#include "FallOfLevel.h"
+#include <WorldPartition/WorldPartitionActorDescView.h>
 
 
 // Sets default values
@@ -47,15 +49,28 @@ void AMyCharacter::BeginPlay()
 	}
 	
 
-	LastPos = GetActorLocation();
+	lastPos = GetActorLocation();
 }
 
-// Called every frame
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*if (lastPos.Z > 0)
+	{
+		lastPos = GetActorLocation();
+	}*/
+
 }
+
+//void AMyCharacter::OnLanded(const FHitResult& Hit)
+//{
+//	Super::OnLanded(Hit);
+//
+//	// Update lastPos when landing
+//	lastPos = GetActorLocation();
+//	UE_LOG(LogTemp, Warning, TEXT("Player landed at: %s"), *lastPos.ToString());
+//}
 
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -141,17 +156,18 @@ void AMyCharacter::Server_Dive_Implementation()
 
 	UE_LOG(LogTemp, Warning, TEXT("Server_Dive executed on the server"));
 
-	FVector DiveForce = GetActorForwardVector() * launchForce;
-	LaunchCharacter(DiveForce, true, false);
+	FVector diveForce
+		= GetActorForwardVector() * launchForce;
+	LaunchCharacter(diveForce, true, false);
 
 	// Set a cooldown before the player can dive again
-	GetWorldTimerManager().SetTimer(DiveCooldownHandle, this, &AMyCharacter::ResetDive, diveCooldown, false);
+	GetWorldTimerManager().SetTimer(diveCooldownHandle, this, &AMyCharacter::ResetDive, diveCooldown, false);
 	
 }
 
 void AMyCharacter::Client_PlaySound_Implementation()
 {
-	if (Sound) 
+	if (Sound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
 	}
@@ -167,8 +183,8 @@ void AMyCharacter::Server_Push_Implementation(ACharacter* TargetCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Client_Push executed on the client"));
 
-	FVector PushDirection = TargetCharacter->GetActorForwardVector() * -1000.0f; // Push backward
-	TargetCharacter->LaunchCharacter(PushDirection, true, false);
+	FVector pushDirection = TargetCharacter->GetActorForwardVector() * -1000.0f; // push backward
+	TargetCharacter->LaunchCharacter(pushDirection, true, false);
 
 	UE_LOG(LogTemp, Warning, TEXT("%s was pushed!"), *TargetCharacter->GetName());
 }

@@ -10,7 +10,7 @@ void AMyGameState::TrackPlayerNum()
 	// increment playerNum
 	playerNum++;
 }
-
+  
 int AMyGameState::GetPlayerNum()
 {
 	return playerNum;

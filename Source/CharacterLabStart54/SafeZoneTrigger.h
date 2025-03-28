@@ -20,7 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
-	class UBoxComponent* TriggerBox;
+	class UBoxComponent* triggerBox;
 
 public:	
 	// Called every frame

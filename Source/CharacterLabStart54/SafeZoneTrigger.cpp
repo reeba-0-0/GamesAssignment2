@@ -12,12 +12,12 @@ ASafeZoneTrigger::ASafeZoneTrigger()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	RootComponent = TriggerBox;
+	triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	RootComponent = triggerBox;
 
 	// Register the overlap event
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASafeZoneTrigger::OnOverlapBegin);
-	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ASafeZoneTrigger::OnOverlapEnd);
+	triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASafeZoneTrigger::OnOverlapBegin);
+	triggerBox->OnComponentEndOverlap.AddDynamic(this, &ASafeZoneTrigger::OnOverlapEnd);
 
 }
 
