@@ -39,25 +39,28 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 {
     if (HasAuthority() && OtherActor)
     {
-        UE_LOG(LogTemp, Warning, TEXT("%s fell out of the level!"), *OtherActor->GetName());
-
-        // Cast to your character
-        auto player = Cast<AMyCharacter>(OtherActor);
-        player->bFalling = true;
-
-        if (player)
+        if (OtherActor)
         {
-            //player->bFalling = true;
-            // Set a respawn offset of a random value
-            FVector respawnOffset = FVector(FMath::RandRange(-50, 50), FMath::RandRange(-50, 50), 0);
+            UE_LOG(LogTemp, Warning, TEXT("%s fell out of the level!"), *OtherActor->GetName());
 
-            // Set location to last player location + offset
-            FVector respawnLocation = player->lastPos + respawnOffset;
+            // Cast to your character
+            auto player = Cast<AMyCharacter>(OtherActor);
+            player->bFalling = true;
 
-            UE_LOG(LogTemp, Warning, TEXT("Respawn Location: %s"), *respawnLocation.ToString());
+            if (player)
+            {
+                //player->bFalling = true;
+                // Set a respawn offset of a random value
+                FVector respawnOffset = FVector(FMath::RandRange(-50, 50), FMath::RandRange(-50, 50), 0);
 
-            player->SetActorLocation(respawnLocation); // Move the player to the new location
-            player->Client_PlaySound(); // Play sound on respawn
+                // Set location to last player location + offset
+                FVector respawnLocation = player->lastPos + respawnOffset;
+
+                UE_LOG(LogTemp, Warning, TEXT("Respawn Location: %s"), *respawnLocation.ToString());
+
+                player->SetActorLocation(respawnLocation); // Move the player to the new location
+                player->Client_PlaySound(); // Play sound on respawn
+            }
         }
     }
 }

@@ -12,6 +12,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "FallOfLevel.h"
 #include <WorldPartition/WorldPartitionActorDescView.h>
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 // Sets default values
@@ -33,6 +35,10 @@ AMyCharacter::AMyCharacter()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
+	niagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	niagaraComponent->SetupAttachment(RootComponent);
+	niagaraComponent->SetAutoActivate(false); 
+
 }
 
 // Called when the game starts or when spawned
@@ -48,6 +54,10 @@ void AMyCharacter::BeginPlay()
 		Subsystem->AddMappingContext(characterMappingContext, 0);
 	}
 	
+	if (niagaraComponent)
+	{
+		niagaraComponent->Activate(); // Trigger the effect
+	}
 
 	lastPos = GetActorLocation();
 }
@@ -63,14 +73,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 }
 
-//void AMyCharacter::OnLanded(const FHitResult& Hit)
-//{
-//	Super::OnLanded(Hit);
-//
-//	// Update lastPos when landing
-//	lastPos = GetActorLocation();
-//	UE_LOG(LogTemp, Warning, TEXT("Player landed at: %s"), *lastPos.ToString());
-//}
 
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

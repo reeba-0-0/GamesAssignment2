@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "MyPlayerState.h"
 #include "MyGameMode.generated.h"
 
 /**
@@ -13,8 +14,8 @@ UCLASS()
 class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+	AMyGameMode();
 
 	UFUNCTION(Exec)
 	void Win();
-	
 };

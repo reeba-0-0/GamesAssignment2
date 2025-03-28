@@ -87,13 +87,14 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_PlaySound();
 
-	FVector lastPos;
+	FVector lastPos = FVector{ 0,0,0 };
 
 	bool bInSafeZone = false;
 
 	bool bFalling = false;
 private:
 
+	class UNiagaraComponent* niagaraComponent;
 
 	UPROPERTY(EditAnywhere)
 	float launchForce = 1000.f;

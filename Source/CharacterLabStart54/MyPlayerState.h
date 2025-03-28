@@ -1,19 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "MyPlayerState.generated.h"
 
+
 /**
- * 
+ *
  */
 UCLASS()
 class CHARACTERLABSTART54_API AMyPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-
+	AMyPlayerState();
 private:
 
 	UPROPERTY(Replicated)
@@ -28,8 +27,12 @@ private:
 	UPROPERTY(Replicated)
 	int maxCheckpoint = 3;
 
-	UPROPERTY(Replicated)
-	bool bReachedCheckpoint = false; // activate this when cp is reached and then immediately de-activate
+	UPROPERTY(ReplicatedUsing = OnRep_CheckpointReached) // ensure proper client updates
+		bool bReachedCheckpoint = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = "true"))
+	class UNiagaraComponent* niagaraComponent;
+
 
 public:
 
@@ -37,10 +40,10 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
 
-	// set bool to active and then false after checking if player has collided with checkpoint box
 	UFUNCTION()
 	void ActivateCheckPoint();
-	// check if checkpoint is reached to replenish health and activate niagara component in game mode
+
+	// check if CP is reached to activate niagara component and replenish health
 	UFUNCTION()
 	bool IsCheckpointReached();
 
@@ -49,4 +52,19 @@ public:
 
 	UFUNCTION()
 	bool IsMaxCheckPoint();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	// server function for checkpoint activation
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerActivateCheckPoint();
+	void ServerActivateCheckPoint_Implementation();
+	bool ServerActivateCheckPoint_Validate();
+
+	// OnRep function for bReachedCheckpoint
+	UFUNCTION()
+	void OnRep_CheckpointReached();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastActivateNiagaraEffect();
 };

@@ -14,3 +14,9 @@ void AMyGameMode::Win()
         UE_LOG(LogTemp, Warning, TEXT("You win!! yayayayy :> "));
     }
 }
+
+AMyGameMode::AMyGameMode()
+{
+    PlayerStateClass = AMyPlayerState::StaticClass();
+
+}
