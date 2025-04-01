@@ -68,7 +68,6 @@ void AMyGameStateBase::UpdateCountdown()
 void AMyGameStateBase::StartCountdownWithDelay()
 {
     GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AMyGameStateBase::StartCountdown, 5.0f, false);
-
 }
 
 bool AMyGameStateBase::ReturnTimerFinished()
