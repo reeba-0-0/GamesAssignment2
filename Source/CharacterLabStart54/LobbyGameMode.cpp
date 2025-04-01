@@ -6,12 +6,16 @@
 
 void ALobbyGameMode::MovePlayers()
 {
-	// get playerNum
-    int playerNum = gameStateRef->GetPlayerNum();
+    gameStateRef = GetGameState<AMyGameState>();
 
-	// check if playerNum == 4
+    if (gameStateRef)
+    {
+        // get playerNum
+        playerNum = gameStateRef->GetConnectedPlayers();
+    }
+	// check if playerNum == max
 
-    if (playerNum == 4)
+    if (playerNum == 3)
     {
         // server travel to start level
         UWorld* World = GetWorld();

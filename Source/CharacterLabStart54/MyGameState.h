@@ -16,12 +16,44 @@ class CHARACTERLABSTART54_API AMyGameState : public AGameState
 
 public:
 	UFUNCTION()
-	void TrackPlayerNum();
+	void IncrementPlayerCount();
+
+	//virtual void PostLogin(APlayerController* NewPlayer) override;
 
 	UFUNCTION()
-	int GetPlayerNum();
+	int GetConnectedPlayers();
+
+	UFUNCTION()
+	void StartCountdown();
+
+	UFUNCTION()
+	void UpdateCountdown();
+
+
+	UFUNCTION()
+	bool ReturnTimerFinished();
+
+	UFUNCTION()
+	bool MaxPlayersReached();
+
 
 private:
-	int playerNum = 0;
+
+	int maxConnectedPlayers = 3;
 	
+	FTimerHandle gameTimerHandle;
+
+	int countdownTime = 60;
+
+	bool bTimerFinished = false;
+
+protected:
+	UPROPERTY(ReplicatedUsing = OnRep_ConnectedPlayers)
+	int connectedPlayers = 1;
+
+	UFUNCTION()
+	void OnRep_ConnectedPlayers();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
+

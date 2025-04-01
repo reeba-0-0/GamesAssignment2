@@ -41,6 +41,10 @@ void AMyPlayerState::ActivateCheckPoint()
     bReachedCheckpoint = false; // de-activate after
 }
 
+void AMyPlayerState::ServerActivateCheckPoint()
+{
+}
+
 // server RPC: clients must call this to activate a checkpoint
 void AMyPlayerState::ServerActivateCheckPoint_Implementation()
 {
@@ -56,6 +60,10 @@ bool AMyPlayerState::ServerActivateCheckPoint_Validate()
 void AMyPlayerState::OnRep_CheckpointReached()
 {
     UE_LOG(LogTemp, Log, TEXT("Checkpoint reached! Updating client visuals."));
+}
+
+void AMyPlayerState::MulticastActivateNiagaraEffect()
+{
 }
 
 
