@@ -53,7 +53,7 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
                 // set respawn offset of a random value
                 FVector respawnOffset = FVector(FMath::RandRange(-50, 50), FMath::RandRange(-50, 50), 0);
               
-
+                
                 // set location to last player location + offset
                 FVector respawnLocation = player->lastPos + respawnOffset;
 
