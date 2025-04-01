@@ -30,8 +30,6 @@ public:
 	UFUNCTION()
 	void UpdateCountdown();
 
-	UFUNCTION()
-	void StartCountdownWithDelay();
 
 	UFUNCTION()
 	bool ReturnTimerFinished();
@@ -45,10 +43,8 @@ private:
 	int maxConnectedPlayers = 3;
 
 	FTimerHandle gameTimerHandle;
-	FTimerHandle delayTimerHandle;
 
-	int countdownTime = 5;
-	int delayTime = 5;
+	int countdownTime = 60;
 
 	bool bTimerFinished = false;
 

@@ -3,7 +3,6 @@
 
 #include "MyGameMode.h"
 #include "MyGameStateBase.h"
-#include <Kismet/GameplayStatics.h>
 
 AMyGameMode::AMyGameMode()
 {
@@ -20,16 +19,6 @@ void AMyGameMode::Win()
         // open level as listen server (allows others to join)
         World->ServerTravel("/Game/Content/WinLevel?listen");
         UE_LOG(LogTemp, Warning, TEXT("You win!! yayayayy :> "));
-    }
-}
-
-void AMyGameMode::Lose()
-{
-    // make player lose if timer is over and 3rd checkpoint isn't reached
-    if (gameStateRef->ReturnTimerFinished() == true)
-    {
-        FString LevelName = "WinLevel";
-        UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
     }
 }
 

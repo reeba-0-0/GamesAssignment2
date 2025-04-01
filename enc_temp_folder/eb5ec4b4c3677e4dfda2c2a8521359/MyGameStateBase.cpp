@@ -1,4 +1,3 @@
-#include "MyGameStateBase.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -9,10 +8,8 @@ void AMyGameStateBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    StartCountdownWithDelay();
-
     // start countdown timer when the game starts
-    //StartCountdown();
+    StartCountdown();
 }
 
 void AMyGameStateBase::IncrementPlayerCount()
@@ -59,21 +56,13 @@ void AMyGameStateBase::UpdateCountdown()
     else
     {
         GetWorld()->GetTimerManager().ClearTimer(gameTimerHandle);
-        UE_LOG(LogTemp, Warning, TEXT("game over"));
-
         bTimerFinished = true;
     }
 }
 
-void AMyGameStateBase::StartCountdownWithDelay()
-{
-    GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AMyGameStateBase::StartCountdown, 5.0f, false);
-
-}
-
 bool AMyGameStateBase::ReturnTimerFinished()
 {
-    //GetWorldTimerManager().ClearTimer(gameTimerHandle);
+    GetWorldTimerManager().ClearTimer(gameTimerHandle);
 
     return bTimerFinished;
 }

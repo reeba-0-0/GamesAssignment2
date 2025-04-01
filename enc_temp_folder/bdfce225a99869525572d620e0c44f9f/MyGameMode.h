@@ -19,9 +19,6 @@ class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 	UFUNCTION(Exec)
 	void Win();
 
-	UFUNCTION(Exec)
-	void Lose();
-
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
