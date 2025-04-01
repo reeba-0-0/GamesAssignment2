@@ -58,8 +58,8 @@ public:
 	// server function for checkpoint activation
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerActivateCheckPoint();
-	void ServerActivateCheckPoint_Implementation();
-	bool ServerActivateCheckPoint_Validate();
+	//void ServerActivateCheckPoint_Implementation();
+	//bool ServerActivateCheckPoint_Validate();
 
 	// OnRep function for bReachedCheckpoint
 	UFUNCTION()

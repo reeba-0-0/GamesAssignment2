@@ -17,7 +17,7 @@ class CHARACTERLABSTART54_API ALobbyGameMode : public AGameMode
 	UFUNCTION()
 	void MovePlayers();
 
-	class AMyGameState* gameStateRef;
+	class AMyGameStateBase* gameStateRef;
 
 private:
 	int playerNum;

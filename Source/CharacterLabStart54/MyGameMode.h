@@ -18,4 +18,9 @@ class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 
 	UFUNCTION(Exec)
 	void Win();
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+private:
+	class AMyGameStateBase* gameStateRef;
 };

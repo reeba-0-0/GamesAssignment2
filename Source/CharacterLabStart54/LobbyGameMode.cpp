@@ -2,11 +2,11 @@
 
 
 #include "LobbyGameMode.h"
-#include "MyGameState.h"
+#include "MyGameStateBase.h"
 
 void ALobbyGameMode::MovePlayers()
 {
-    gameStateRef = GetGameState<AMyGameState>();
+    gameStateRef = GetGameState<AMyGameStateBase>();
 
     if (gameStateRef)
     {

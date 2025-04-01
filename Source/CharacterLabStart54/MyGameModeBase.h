@@ -15,8 +15,7 @@ UCLASS()
 class CHARACTERLABSTART54_API AMyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 
 private:
 	class AMyGameState* gameStateRef;

@@ -2,6 +2,13 @@
 
 
 #include "MyGameMode.h"
+#include "MyGameStateBase.h"
+
+AMyGameMode::AMyGameMode()
+{
+    PlayerStateClass = AMyPlayerState::StaticClass();
+    GameStateClass = AMyGameStateBase::StaticClass();
+}
 
 void AMyGameMode::Win()
 {
@@ -15,8 +22,18 @@ void AMyGameMode::Win()
     }
 }
 
-AMyGameMode::AMyGameMode()
+void AMyGameMode::PostLogin(APlayerController* NewPlayer)
 {
-    PlayerStateClass = AMyPlayerState::StaticClass();
+    Super::PostLogin(NewPlayer);
 
+    gameStateRef = GetGameState<AMyGameStateBase>();
+    if (gameStateRef)
+    {
+        gameStateRef->IncrementPlayerCount();
+    }
 }
+
+
+
+
+
