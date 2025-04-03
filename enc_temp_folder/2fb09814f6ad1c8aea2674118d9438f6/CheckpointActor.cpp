@@ -4,8 +4,6 @@
 #include "CheckpointActor.h"
 #include "MyCharacter.h"
 #include <Components/BoxComponent.h>
-#include "NiagaraComponent.h"
-#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 ACheckpointActor::ACheckpointActor()
@@ -20,11 +18,6 @@ ACheckpointActor::ACheckpointActor()
 	
     triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
     triggerBox->SetupAttachment(staticMesh);
-
-    // create and attach niagara component
-    niagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
-    niagaraComponent->SetupAttachment(RootComponent);
-    niagaraComponent->SetAutoActivate(false);
 
     triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapBegin);
     triggerBox->OnComponentEndOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapEnd);
@@ -64,11 +57,6 @@ void ACheckpointActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
         {
             ActorNames.Add(player->GetActorLabel());
             player->lastPos = GetActorLocation();
-        }
-
-        if (niagaraComponent)
-        {
-            niagaraComponent->SetActive(true);
         }
     }
 }

@@ -32,9 +32,6 @@ public:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 private:
 
-	UPROPERTY(EditAnywhere)
-	class UNiagaraComponent* niagaraComponent;
-
 	TArray<FString> ActorNames;
 
 	UPROPERTY(EditAnywhere)

@@ -12,6 +12,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "FallOffLevel.h"
 #include <WorldPartition/WorldPartitionActorDescView.h>
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 // Sets default values

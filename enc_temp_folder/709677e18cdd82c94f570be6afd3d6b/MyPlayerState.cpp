@@ -5,7 +5,10 @@
 
 AMyPlayerState::AMyPlayerState()
 {
-
+    // create and attach niagara component
+    niagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+    niagaraComponent->SetupAttachment(RootComponent);
+    niagaraComponent->SetAutoActivate(false); 
 }
 
 

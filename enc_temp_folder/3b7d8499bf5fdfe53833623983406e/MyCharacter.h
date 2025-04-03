@@ -97,6 +97,8 @@ public:
 
 private:
 
+	class UNiagaraComponent* niagaraComponent;
+
 	UPROPERTY(EditAnywhere)
 	float launchForce = 1000.f;
 
