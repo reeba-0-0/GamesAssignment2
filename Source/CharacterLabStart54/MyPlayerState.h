@@ -43,15 +43,12 @@ public:
 	UFUNCTION()
 	void ActivateCheckPoint();
 
-	// check if CP is reached to activate niagara component and replenish health
-	UFUNCTION()
-	bool IsCheckpointReached();
+
 
 	UFUNCTION()
 	void ReplenishHealth();
 
-	UFUNCTION()
-	void IncrementCheckpointCount();
+
 
 	UFUNCTION()
 	bool IsMaxCheckPoint();
@@ -68,6 +65,6 @@ public:
 	UFUNCTION()
 	void OnRep_CheckpointReached();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastActivateNiagaraEffect();
+	/*UFUNCTION(NetMulticast, Reliable)
+	void MulticastActivateNiagaraEffect();*/
 };

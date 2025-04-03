@@ -30,6 +30,13 @@ public:
 
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastActivateNiagaraEffect();
+
+	UFUNCTION(Server, Reliable)
+	void ServerCallNiagaraEffect();
+
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -42,4 +49,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
 	class UBoxComponent* triggerBox;
+	
+	UPROPERTY()
+	class AMyPlayerState* playerStateRef;
 };

@@ -19,19 +19,13 @@ void AMyPlayerState::ActivateCheckPoint()
 {
     if (!HasAuthority()) return; // ensure only the server modifies replicated variables
 
-    if (bReachedCheckpoint == false && currentCheckpoint < maxCheckpoint)
+    if (currentCheckpoint < maxCheckpoint)
     {
         bReachedCheckpoint = true;
         currentCheckpoint++;
         if (currentCheckpoint <= maxCheckpoint)
         {
             ReplenishHealth();
-
-            if (HasAuthority()) // Ensure it runs on the server
-            {
-                MulticastActivateNiagaraEffect();
-            }
-
         }
     }
 
@@ -57,19 +51,10 @@ void AMyPlayerState::OnRep_CheckpointReached()
 }
 
 
-bool AMyPlayerState::IsCheckpointReached()
-{
-    return bReachedCheckpoint;
-}
 
 void AMyPlayerState::ReplenishHealth()
 {
     currentHealth = maxHealth;
-}
-
-void AMyPlayerState::IncrementCheckpointCount()
-{
-    currentCheckpoint++;
 }
 
 bool AMyPlayerState::IsMaxCheckPoint()
@@ -89,13 +74,13 @@ void AMyPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
     DOREPLIFETIME(AMyPlayerState, bReachedCheckpoint);
 }
 
-void AMyPlayerState::MulticastActivateNiagaraEffect_Implementation()
-{
-    if (niagaraComponent)
-    {
-        niagaraComponent->Activate(); // Trigger the effect
-    }
-}
+//void AMyPlayerState::MulticastActivateNiagaraEffect_Implementation()
+//{
+//    if (niagaraComponent)
+//    {
+//        niagaraComponent->Activate(); // Trigger the effect
+//    }
+//}
 
 
 

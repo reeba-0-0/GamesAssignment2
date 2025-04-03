@@ -4,12 +4,20 @@
 #include "CheckpointActor.h"
 #include "MyCharacter.h"
 #include <Components/BoxComponent.h>
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "MyGameStateBase.h"
+#include <Kismet/GameplayStatics.h>
+#include "MyPlayerState.h"
 
 // Sets default values
 ACheckpointActor::ACheckpointActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+    // In your actor's constructor or initialization method
+    bReplicates = true;
 
     //bReplicates = true;
 
@@ -18,6 +26,11 @@ ACheckpointActor::ACheckpointActor()
 	
     triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
     triggerBox->SetupAttachment(staticMesh);
+
+    // create and attach niagara component
+    niagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+    niagaraComponent->SetupAttachment(RootComponent);
+    niagaraComponent->SetAutoActivate(false);
 
     triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapBegin);
     triggerBox->OnComponentEndOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapEnd);
@@ -57,7 +70,29 @@ void ACheckpointActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
         {
             ActorNames.Add(player->GetActorLabel());
             player->lastPos = GetActorLocation();
+           
         }
+
+        APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+        if (playerController)
+        {
+           playerStateRef = Cast<AMyPlayerState>(playerController->PlayerState);
+        }        
+
+        if (playerStateRef)
+        {
+            playerStateRef->ActivateCheckPoint();
+        }
+    }
+
+
+    if (HasAuthority())
+    {
+        MulticastActivateNiagaraEffect();
+    }
+    else
+    {
+        ServerCallNiagaraEffect();
     }
 }
 
@@ -69,6 +104,19 @@ void ACheckpointActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
         auto player = Cast<AMyCharacter>(OtherActor);
 
         player->lastPos = GetActorLocation();
+    }
+}
+
+void ACheckpointActor::ServerCallNiagaraEffect_Implementation()
+{
+    MulticastActivateNiagaraEffect();
+}
+
+void ACheckpointActor::MulticastActivateNiagaraEffect_Implementation()
+{
+    if (niagaraComponent)
+    {
+        niagaraComponent->Activate(); // trigger effect
     }
 }
 
