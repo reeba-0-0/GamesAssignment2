@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FallOfLevel.generated.h"
+#include "FallOffLevel.generated.h"
 
 UCLASS()
 class CHARACTERLABSTART54_API AFallOffLevel : public AActor
