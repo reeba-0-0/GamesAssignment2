@@ -14,6 +14,8 @@ class CHARACTERLABSTART54_API UMyGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+
 	UFUNCTION(Exec)
 	void TesterFunction();
 

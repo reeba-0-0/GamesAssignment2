@@ -18,7 +18,7 @@ void AMyGameMode::Win()
     if (World)
     {
         // open level as listen server (allows others to join)
-        World->ServerTravel("/Game/Content/WinLevel?listen");
+        World->ServerTravel("/Game/WinLevel?listen");
         UE_LOG(LogTemp, Warning, TEXT("You win!! yayayayy :> "));
     }
 }
@@ -26,25 +26,15 @@ void AMyGameMode::Win()
 void AMyGameMode::Lose()
 {
     // make player lose if timer is over and 3rd checkpoint isn't reached
-    if (gameStateRef->ReturnTimerFinished() == true)
+    UWorld* World = GetWorld();
+
+    if (World)
     {
-        FString LevelName = "WinLevel";
-        UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+        // open level as listen server (allows others to join)
+        World->ServerTravel("/Game/LoseLevel?listen");
     }
+    
 }
-
-void AMyGameMode::PostLogin(APlayerController* NewPlayer)
-{
-    Super::PostLogin(NewPlayer);
-
-    gameStateRef = GetGameState<AMyGameStateBase>();
-    if (gameStateRef)
-    {
-        gameStateRef->IncrementPlayerCount();
-    }
-}
-
-
 
 
 

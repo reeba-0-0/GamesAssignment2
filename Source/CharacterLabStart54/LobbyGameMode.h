@@ -13,9 +13,12 @@ UCLASS()
 class CHARACTERLABSTART54_API ALobbyGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
+
+
 	UFUNCTION()
 	void MovePlayers();
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 	class AMyGameStateBase* gameStateRef;
 

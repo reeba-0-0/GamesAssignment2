@@ -4,12 +4,16 @@
 
 #include "MyGameStateBase.h"
 #include <Net/UnrealNetwork.h>
+#include "MyGameMode.h"
 
 void AMyGameStateBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    StartCountdownWithDelay();
+    if (HasAuthority())
+    {
+        StartCountdownWithDelay();
+    }
 
     // start countdown timer when the game starts
     //StartCountdown();
@@ -43,26 +47,17 @@ int AMyGameStateBase::GetConnectedPlayers()
 
 void AMyGameStateBase::StartCountdown()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), countdownTime);
+    if (HasAuthority())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), countdownTime);
 
-	GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameStateBase::UpdateCountdown, 1.0f, true);
-
+	    GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameStateBase::EndGameTimer, countdownTime, false);
+    }
 }
 
-void AMyGameStateBase::UpdateCountdown()
+void AMyGameStateBase::EndGameTimer()
 {
-    if (countdownTime > 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Time Left: %d seconds"),(countdownTime));
-        countdownTime--;
-    }
-    else
-    {
-        GetWorld()->GetTimerManager().ClearTimer(gameTimerHandle);
-        UE_LOG(LogTemp, Warning, TEXT("game over"));
-
-        bTimerFinished = true;
-    }
+    Cast<AMyGameMode>(GetWorld()->GetAuthGameMode())->Lose();
 }
 
 void AMyGameStateBase::StartCountdownWithDelay()
@@ -79,7 +74,7 @@ bool AMyGameStateBase::ReturnTimerFinished()
 
 bool AMyGameStateBase::MaxPlayersReached()
 {
-    return connectedPlayers == 4;
+    return connectedPlayers >= MAX_CONNECTED_PLAYERS;
 }
 
 void AMyGameStateBase::OnRep_ConnectedPlayers()
@@ -91,4 +86,5 @@ void AMyGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AMyGameStateBase, connectedPlayers);
+    DOREPLIFETIME(AMyGameStateBase, GameTimerTxt);
 }

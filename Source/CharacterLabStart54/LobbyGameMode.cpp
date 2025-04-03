@@ -8,22 +8,29 @@ void ALobbyGameMode::MovePlayers()
 {
     gameStateRef = GetGameState<AMyGameStateBase>();
 
-    if (gameStateRef)
-    {
-        // get playerNum
-        playerNum = gameStateRef->GetConnectedPlayers();
-    }
 	// check if playerNum == max
-
-    if (playerNum == 3)
+    if (gameStateRef && gameStateRef->MaxPlayersReached())
     {
         // server travel to start level
         UWorld* World = GetWorld();
         if (World)
         {
             // open level as listen server (allows others to join)
-            World->ServerTravel("/Game/Content/BasicLevel?listen");
+            World->ServerTravel("/Game/LobbyLevel?listen");
             UE_LOG(LogTemp, Warning, TEXT("Hosting Game..."));
         }
     }
+}
+
+
+void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+    Super::PostLogin(NewPlayer);
+
+    if (gameStateRef)
+    {
+        gameStateRef->IncrementPlayerCount();
+    }
+
+    MovePlayers();
 }

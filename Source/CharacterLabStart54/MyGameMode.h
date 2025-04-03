@@ -16,13 +16,13 @@ class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 	GENERATED_BODY()
 	AMyGameMode();
 
-	UFUNCTION(Exec)
+public:
+
+	UFUNCTION()
 	void Win();
 
-	UFUNCTION(Exec)
+	UFUNCTION()
 	void Lose();
-
-	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
 	class AMyGameStateBase* gameStateRef;

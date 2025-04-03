@@ -92,6 +92,8 @@ public:
 	bool bInSafeZone = false;
 
 	bool bFalling = false;
+
+
 private:
 
 	class UNiagaraComponent* niagaraComponent;

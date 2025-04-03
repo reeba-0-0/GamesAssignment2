@@ -70,6 +70,11 @@ void AMyPlayerState::ReplenishHealth()
     currentHealth = maxHealth;
 }
 
+void AMyPlayerState::IncrementCheckpointCount()
+{
+    currentCheckpoint++;
+}
+
 bool AMyPlayerState::IsMaxCheckPoint()
 {
     return currentCheckpoint == maxCheckpoint;

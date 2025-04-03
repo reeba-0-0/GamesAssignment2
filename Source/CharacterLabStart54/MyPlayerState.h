@@ -51,6 +51,9 @@ public:
 	void ReplenishHealth();
 
 	UFUNCTION()
+	void IncrementCheckpointCount();
+
+	UFUNCTION()
 	bool IsMaxCheckPoint();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

@@ -28,7 +28,7 @@ public:
 	void StartCountdown();
 
 	UFUNCTION()
-	void UpdateCountdown();
+	void EndGameTimer();
 
 	UFUNCTION()
 	void StartCountdownWithDelay();
@@ -42,7 +42,8 @@ public:
 
 private:
 
-	int maxConnectedPlayers = 3;
+	UPROPERTY(EditAnywhere)
+	int MAX_CONNECTED_PLAYERS = 3;
 
 	FTimerHandle gameTimerHandle;
 	FTimerHandle delayTimerHandle;
@@ -60,4 +61,9 @@ protected:
 	void OnRep_ConnectedPlayers();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+public:
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FString GameTimerTxt = "";
+
 };

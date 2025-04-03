@@ -35,9 +35,9 @@ void AMyActor::Tick(float DeltaTime)
 	{
 		FRotator currentRotation = GetActorRotation();
 
-		currentRotation.Yaw += rotationSpeed;
+		currentRotation.Yaw += rotationSpeed * DeltaTime;
 
-		AddActorLocalRotation(currentRotation * DeltaTime);
+		SetActorRotation(currentRotation);
 	}
 }
 
