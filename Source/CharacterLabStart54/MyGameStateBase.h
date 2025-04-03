@@ -19,22 +19,8 @@ public:
 	UFUNCTION()
 	void IncrementPlayerCount();
 
-	//virtual void PostLogin(APlayerController* NewPlayer) override;
-
 	UFUNCTION()
 	int GetConnectedPlayers();
-
-	UFUNCTION()
-	void StartCountdown();
-
-	UFUNCTION()
-	void EndGameTimer();
-
-	UFUNCTION()
-	void StartCountdownWithDelay();
-
-	UFUNCTION()
-	bool ReturnTimerFinished();
 
 	UFUNCTION()
 	bool MaxPlayersReached();
@@ -44,18 +30,14 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int MAX_CONNECTED_PLAYERS = 3;
-
-	FTimerHandle gameTimerHandle;
-	FTimerHandle delayTimerHandle;
-
-	int countdownTime = 5;
+	
 	int delayTime = 5;
 
 	bool bTimerFinished = false;
 
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_ConnectedPlayers)
-	int connectedPlayers = 1;
+	int connectedPlayers = 0;
 
 	UFUNCTION()
 	void OnRep_ConnectedPlayers();
@@ -65,5 +47,8 @@ protected:
 public:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	FString GameTimerTxt = "";
+
+	UPROPERTY(EditAnywhere)
+	int countdownTime = 50;
 
 };

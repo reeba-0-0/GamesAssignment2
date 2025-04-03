@@ -16,7 +16,7 @@ void ALobbyGameMode::MovePlayers()
         if (World)
         {
             // open level as listen server (allows others to join)
-            World->ServerTravel("/Game/BasicLevel?listen");
+            World->ServerTravel("/Game/LobbyLevel?listen");
             UE_LOG(LogTemp, Warning, TEXT("Hosting Game..."));
         }
     }
@@ -26,6 +26,11 @@ void ALobbyGameMode::MovePlayers()
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
+
+    if (gameStateRef)
+    {
+        gameStateRef->IncrementPlayerCount();
+    }
 
     MovePlayers();
 }

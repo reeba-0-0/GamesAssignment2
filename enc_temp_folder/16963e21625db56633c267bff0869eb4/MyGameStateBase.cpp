@@ -28,7 +28,7 @@ int AMyGameStateBase::GetConnectedPlayers()
 
 bool AMyGameStateBase::MaxPlayersReached()
 {
-    return PlayerArray.Num() >= MAX_CONNECTED_PLAYERS;
+    return connectedPlayers >= MAX_CONNECTED_PLAYERS;
 }
 
 void AMyGameStateBase::OnRep_ConnectedPlayers()

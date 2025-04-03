@@ -3,6 +3,7 @@
 
 #include "FallOffLevel.h"
 #include "MyCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include <Components/BoxComponent.h>
 
 // Sets default values
@@ -46,7 +47,7 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
             // cast to character
             auto player = Cast<AMyCharacter>(OtherActor);
             player->bFalling = true;
-
+            
             if (player)
             {
                 //player->bFalling = true;

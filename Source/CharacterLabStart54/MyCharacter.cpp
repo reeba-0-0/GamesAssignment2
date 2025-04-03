@@ -55,12 +55,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*if (lastPos.Z > 0)
-	{
-		lastPos = GetActorLocation();
-	}*/
-
 }
 
 

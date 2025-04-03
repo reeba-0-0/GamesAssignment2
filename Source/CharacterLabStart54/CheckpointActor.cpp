@@ -3,6 +3,7 @@
 
 #include "CheckpointActor.h"
 #include "MyCharacter.h"
+#include <Components/BoxComponent.h>
 
 // Sets default values
 ACheckpointActor::ACheckpointActor()
@@ -15,7 +16,11 @@ ACheckpointActor::ACheckpointActor()
     staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
     RootComponent = staticMesh;
 	
-    staticMesh->OnComponentBeginOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapBegin);
+    triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+    triggerBox->SetupAttachment(staticMesh);
+
+    triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapBegin);
+    triggerBox->OnComponentEndOverlap.AddDynamic(this, &ACheckpointActor::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
@@ -34,21 +39,36 @@ void ACheckpointActor::Tick(float DeltaTime)
 
 void ACheckpointActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
     if (HasAuthority() && OtherActor)
     {
-        if (OtherActor)
+        //check if the actor has already hit the checkpoint
+        for (FString name : ActorNames)
         {
-            UE_LOG(LogTemp, Warning, TEXT("%s fell out of the level!"), *OtherActor->GetName());
-
-            // cast to character
-            auto player = Cast<AMyCharacter>(OtherActor);
-
-            if (player)
+            if (name == OtherActor->GetActorLabel()) 
             {
-                // do shit
+                return;
             }
         }
+
+        // cast to character
+        auto player = Cast<AMyCharacter>(OtherActor);
+
+        if (player)
+        {
+            ActorNames.Add(player->GetActorLabel());
+            player->lastPos = GetActorLocation();
+        }
+    }
+}
+
+void ACheckpointActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (HasAuthority() && OtherActor)
+    {
+        // cast to character
+        auto player = Cast<AMyCharacter>(OtherActor);
+
+        player->lastPos = GetActorLocation();
     }
 }
 

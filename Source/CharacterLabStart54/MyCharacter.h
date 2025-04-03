@@ -93,6 +93,7 @@ public:
 
 	bool bFalling = false;
 
+	bool bSetLastValid = false;
 
 private:
 

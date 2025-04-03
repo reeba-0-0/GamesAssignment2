@@ -11,6 +11,16 @@ AMyGameMode::AMyGameMode()
     GameStateClass = AMyGameStateBase::StaticClass();
 }
 
+void AMyGameMode::BeginPlay()
+{
+    if (HasAuthority())
+    {
+        gameStateRef = GetGameState<AMyGameStateBase>();
+
+        StartCountdownWithDelay();
+    }
+}
+
 void AMyGameMode::Win()
 {
     UWorld* World = GetWorld();
@@ -36,5 +46,23 @@ void AMyGameMode::Lose()
     
 }
 
+void AMyGameMode::StartCountdown()
+{
+    if (HasAuthority())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), gameStateRef->countdownTime);
 
+        GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameMode::Lose, gameStateRef->countdownTime, false);
+    }
+}
+
+void AMyGameMode::EndGameTimer()
+{
+    Cast<AMyGameMode>(GetWorld()->GetAuthGameMode())->Lose();
+}
+
+void AMyGameMode::StartCountdownWithDelay()
+{
+    GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AMyGameMode::StartCountdown, 5.0f, false);
+}
 
