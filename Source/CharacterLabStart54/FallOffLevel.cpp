@@ -5,6 +5,7 @@
 #include "MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Components/BoxComponent.h>
+#include "MyPlayerState.h"
 
 // Sets default values
 AFallOffLevel::AFallOffLevel()
@@ -53,7 +54,21 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
                 //player->bFalling = true;
                 // set respawn offset of a random value
                 FVector respawnOffset = FVector(FMath::RandRange(-50, 50), FMath::RandRange(-50, 50), 0);
-              
+
+
+                AMyPlayerState* playerState = Cast<AMyPlayerState>(player->GetPlayerState());
+                if (playerState)
+                {
+                    playerState->ReduceHealth();
+                    int health = playerState->GetHealth();
+
+                    //UE_LOG(LogTemp, Warning, TEXT("health reduced, new health: %d"), playerState->ReduceHealth());
+
+                  /*  if (health == 0)
+                    {
+                        playerState->KillPlayer();
+                    }*/
+                }
                 
                 // set location to last player location + offset
                 FVector respawnLocation = player->lastPos + respawnOffset;

@@ -1,9 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// MyGameMode.cpp
 
 #include "MyGameMode.h"
 #include "MyGameStateBase.h"
+#include "MyPlayerState.h"
 #include <Kismet/GameplayStatics.h>
+#include <GameFramework/PlayerController.h>
+#include <Engine/World.h>
 
 AMyGameMode::AMyGameMode()
 {
@@ -16,34 +18,13 @@ void AMyGameMode::BeginPlay()
     if (HasAuthority())
     {
         gameStateRef = GetGameState<AMyGameStateBase>();
-
         StartCountdownWithDelay();
     }
 }
 
-void AMyGameMode::Win()
+void AMyGameMode::StartCountdownWithDelay()
 {
-    UWorld* World = GetWorld();
-
-    if (World)
-    {
-        // open level as listen server (allows others to join)
-        World->ServerTravel("/Game/WinLevel?listen");
-        UE_LOG(LogTemp, Warning, TEXT("You win!! yayayayy :> "));
-    }
-}
-
-void AMyGameMode::Lose()
-{
-    // make player lose if timer is over and 3rd checkpoint isn't reached
-    UWorld* World = GetWorld();
-
-    if (World)
-    {
-        // open level as listen server (allows others to join)
-        World->ServerTravel("/Game/LoseLevel?listen");
-    }
-    
+    GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AMyGameMode::StartCountdown, 5.0f, false);
 }
 
 void AMyGameMode::StartCountdown()
@@ -52,17 +33,67 @@ void AMyGameMode::StartCountdown()
     {
         UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), gameStateRef->countdownTime);
 
-        GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameMode::Lose, gameStateRef->countdownTime, false);
+        bool bSomeoneWon = false;
+
+        for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+        {
+            APlayerController* playerController = Iterator->Get();
+            if (playerController)
+            {
+                AMyPlayerState* playerState = Cast<AMyPlayerState>(playerController->PlayerState);
+                if (playerState && playerState->IsMaxCheckPoint())
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("Player %s reached the final checkpoint"), *playerController->GetName());
+                    bSomeoneWon = true;
+                    break;
+                }
+            }
+        }
+
+        if (bSomeoneWon)
+        {
+            Win();
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("No player reached final checkpoint. Starting lose timer."));
+            GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameMode::Lose, gameStateRef->countdownTime, false);
+            GetWorldTimerManager().SetTimer(displayTimerHandle, this, &AMyGameMode::UpdateTimerDisplay, 1.0f, true);
+        }
     }
 }
 
-void AMyGameMode::EndGameTimer()
+void AMyGameMode::UpdateTimerDisplay()
 {
-    Cast<AMyGameMode>(GetWorld()->GetAuthGameMode())->Lose();
+    float timeLeft = GetWorldTimerManager().GetTimerRemaining(gameTimerHandle);
+    if (gameStateRef)
+    {
+        int timeLeftInt = FMath::Max(0, FMath::RoundToInt(timeLeft));
+        gameStateRef->gameTimerTxt = "Timer: " + FString::FromInt(timeLeftInt);
+        UE_LOG(LogTemp, Warning, TEXT("Time Left (tick): %d"), timeLeftInt);
+    }
 }
 
-void AMyGameMode::StartCountdownWithDelay()
+void AMyGameMode::Win()
 {
-    GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AMyGameMode::StartCountdown, 5.0f, false);
+    GetWorldTimerManager().ClearTimer(displayTimerHandle);
+
+    UWorld* World = GetWorld();
+    if (World)
+    {
+        World->ServerTravel("/Game/WinLevel?listen");
+        UE_LOG(LogTemp, Warning, TEXT("You win!! yayayayy :> "));
+    }
 }
 
+void AMyGameMode::Lose()
+{
+    GetWorldTimerManager().ClearTimer(displayTimerHandle);
+
+    UWorld* World = GetWorld();
+    if (World)
+    {
+        World->ServerTravel("/Game/LoseLevel?listen");
+        UE_LOG(LogTemp, Warning, TEXT("Game Over :( You lose!"));
+    }
+}

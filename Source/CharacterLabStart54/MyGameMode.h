@@ -29,15 +29,21 @@ public:
 	UFUNCTION()
 	void StartCountdown();
 
-	UFUNCTION()
-	void EndGameTimer();
+	//UFUNCTION()
+	//void EndGameTimer();
 
 	UFUNCTION()
 	void StartCountdownWithDelay();
+
+	UFUNCTION()
+	void UpdateTimerDisplay();
 
 private:
 	class AMyGameStateBase* gameStateRef;
 
 	FTimerHandle gameTimerHandle;
-	FTimerHandle delayTimerHandle;
+	FTimerHandle delayTimerHandle;    
+	FTimerHandle displayTimerHandle;
+
+	class AMyPlayerState* playerStateRef;
 };

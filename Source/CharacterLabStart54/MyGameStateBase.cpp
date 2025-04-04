@@ -40,5 +40,5 @@ void AMyGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AMyGameStateBase, connectedPlayers);
-    DOREPLIFETIME(AMyGameStateBase, GameTimerTxt);
+    DOREPLIFETIME(AMyGameStateBase, gameTimerTxt);
 }

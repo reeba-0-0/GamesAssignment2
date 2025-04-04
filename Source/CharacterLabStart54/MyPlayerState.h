@@ -13,17 +13,18 @@ class CHARACTERLABSTART54_API AMyPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	AMyPlayerState();
-private:
+public:
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	int currentHealth = 30;
 
 	UPROPERTY(Replicated)
 	int maxHealth = 30;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	int currentCheckpoint = 0;
 
+	
 	UPROPERTY(Replicated)
 	int maxCheckpoint = 3;
 
@@ -36,9 +37,8 @@ private:
 
 public:
 
-	UFUNCTION()
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-		AController* EventInstigator, AActor* DamageCauser) override;
+	/*virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;*/
 
 	UFUNCTION()
 	void ActivateCheckPoint();
@@ -67,4 +67,16 @@ public:
 
 	/*UFUNCTION(NetMulticast, Reliable)
 	void MulticastActivateNiagaraEffect();*/
+
+	UFUNCTION()
+	void ReduceHealth();
+
+	UFUNCTION()
+	int GetHealth();
+
+	UFUNCTION()
+	bool NoHealthLeft();
+
+	UFUNCTION()
+	void KillPlayer();
 };

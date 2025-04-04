@@ -8,12 +8,12 @@ AMyPlayerState::AMyPlayerState()
 
 }
 
-
-float AMyPlayerState::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-    currentHealth -= DamageAmount;
-    return currentHealth;
-}
+//
+//float AMyPlayerState::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+//{
+//    currentHealth -= DamageAmount;
+//    return currentHealth;
+//}
 
 void AMyPlayerState::ActivateCheckPoint()
 {
@@ -23,6 +23,9 @@ void AMyPlayerState::ActivateCheckPoint()
     {
         bReachedCheckpoint = true;
         currentCheckpoint++;
+
+        UE_LOG(LogTemp, Log, TEXT("current checkpoint: %d"), currentCheckpoint);
+
         if (currentCheckpoint <= maxCheckpoint)
         {
             ReplenishHealth();
@@ -47,9 +50,52 @@ bool AMyPlayerState::ServerActivateCheckPoint_Validate()
 // ensure clients properly update when bReachedCheckpoint changes
 void AMyPlayerState::OnRep_CheckpointReached()
 {
-    UE_LOG(LogTemp, Log, TEXT("Checkpoint reached! Updating client visuals."));
+    UE_LOG(LogTemp, Log, TEXT("Checkpoint reached"));
 }
 
+void AMyPlayerState::ReduceHealth()
+{
+    currentHealth -= 10;
+
+    if (currentHealth <= 0.0f && GetWorld())
+    {
+        APlayerController* PC = Cast<APlayerController>(GetOwner());
+        if (PC)
+        {
+            // Travel just this player to the Lose level
+            PC->ClientTravel("/Game/LoseLevel", ETravelType::TRAVEL_Absolute);
+            UE_LOG(LogTemp, Warning, TEXT("Player %s has been sent to Lose Level."), *GetPlayerName());
+        }
+
+       /* UWorld* World = GetWorld();
+        if (World)
+        {
+            World->ServerTravel("/Game/LoseLevel?listen");
+            UE_LOG(LogTemp, Warning, TEXT("Game Over :( You lose!"));
+        }*/
+    }
+}
+
+int AMyPlayerState::GetHealth()
+{
+    return currentHealth;
+}
+
+bool AMyPlayerState::NoHealthLeft()
+{
+    return currentHealth <= 0;
+}
+
+void AMyPlayerState::KillPlayer()
+{
+    if (HasAuthority())
+    {
+        if (currentHealth <= 0.f)
+        {
+            Destroy();
+        }
+    }
+}
 
 
 void AMyPlayerState::ReplenishHealth()
@@ -59,7 +105,7 @@ void AMyPlayerState::ReplenishHealth()
 
 bool AMyPlayerState::IsMaxCheckPoint()
 {
-    return currentCheckpoint == maxCheckpoint;
+    return currentCheckpoint >= maxCheckpoint;
 }
 
 // replication settings

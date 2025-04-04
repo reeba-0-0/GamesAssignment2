@@ -46,9 +46,9 @@ protected:
 
 public:
 	UPROPERTY(Replicated, BlueprintReadOnly)
-	FString GameTimerTxt = "";
+	FString gameTimerTxt = "";
 
 	UPROPERTY(EditAnywhere)
-	int countdownTime = 50;
+	int countdownTime = 120;
 
 };
