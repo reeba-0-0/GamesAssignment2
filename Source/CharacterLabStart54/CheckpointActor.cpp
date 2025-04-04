@@ -16,7 +16,6 @@ ACheckpointActor::ACheckpointActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    // In your actor's constructor or initialization method
     bReplicates = true;
 
     staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
