@@ -98,9 +98,8 @@ void AMyCharacter::PushHandler(const FInputActionValue& Value)
 	//if they are in the safe zone do not allow them to push other players 157
 	if (bInSafeZone) return;
 
+	FVector Start = GetActorLocation();
 	FVector ForwardVector = GetActorForwardVector();
-
-	FVector Start = GetActorLocation() + (ForwardVector + 10.f);
 	FVector End = Start + (ForwardVector * pushDistance); // 100 cm forward
 
 	FHitResult Hit;
@@ -119,7 +118,7 @@ void AMyCharacter::PushHandler(const FInputActionValue& Value)
 			UE_LOG(LogTemp, Warning, TEXT("Push hit: %s"), *TargetCharacter->GetName());
 
 			// Call Client_Push on the target character
-			Server_Push(TargetCharacter);
+			TargetCharacter->Server_Push(TargetCharacter);
 		}
 	}
 
@@ -177,18 +176,15 @@ void AMyCharacter::Server_Push_Implementation(ACharacter* TargetCharacter)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Client_Push executed on the client"));
 
-
-	//FVector pushDirection = TargetCharacter->GetActorForwardVector() * -1000.0f; // push backward
-	//TargetCharacter->LaunchCharacter(pushDirection, true, false);
-
 	FVector direction = TargetCharacter->GetActorLocation() - GetActorLocation();
 	
 	direction.Z = 0;
 	direction.Normalize();
 
-	FVector force = direction * -pushForce;
+	FVector force = direction * pushForce;
 
 	TargetCharacter->LaunchCharacter(force, true, false);
 
 	UE_LOG(LogTemp, Warning, TEXT("%s was pushed!"), *TargetCharacter->GetName());
 }
+

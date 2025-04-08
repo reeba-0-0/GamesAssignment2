@@ -51,4 +51,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	int countdownTime = 120;
 
+	UFUNCTION(BlueprintCallable)
+	void HostGame();
+
+	UFUNCTION(BlueprintCallable)
+	void JoinGame(FString IPAddress);
+
 };

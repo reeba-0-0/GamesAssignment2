@@ -72,10 +72,7 @@ private:
 	void StrafeHandler(const FInputActionValue& Value);
 	void TurnHandler(const FInputActionValue& Value);
 	void LookUpHandler(const FInputActionValue& Value);
-
-	UFUNCTION()
 	void PushHandler(const FInputActionValue& Value);
-
 	void DiveHandler(const FInputActionValue& Value);
 
 

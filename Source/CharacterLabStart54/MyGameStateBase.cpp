@@ -1,5 +1,6 @@
 #include "MyGameStateBase.h"
 // Fill out your copyright notice in the Description page of Project Settings.
+#include "MyGameInstance.h"
 
 
 #include "MyGameStateBase.h"
@@ -9,7 +10,7 @@
 void AMyGameStateBase::BeginPlay()
 {
     Super::BeginPlay();
-
+    
 }
 
 void AMyGameStateBase::IncrementPlayerCount()
@@ -41,4 +42,25 @@ void AMyGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AMyGameStateBase, connectedPlayers);
     DOREPLIFETIME(AMyGameStateBase, gameTimerTxt);
+}
+
+void AMyGameStateBase::HostGame()
+{
+    auto gameInstanceRef = GetGameInstance<UMyGameInstance>();
+
+    if (gameInstanceRef)
+    {
+        gameInstanceRef->HostGame();
+    }
+}
+
+void AMyGameStateBase::JoinGame(FString IPAddress)
+{
+    auto gameInstanceRef = GetGameInstance<UMyGameInstance>();
+
+
+    if (gameInstanceRef)
+    {
+        gameInstanceRef->JoinGame(IPAddress);
+    }
 }
