@@ -63,6 +63,7 @@ void ACheckpointActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
         // cast to character
         auto player = Cast<AMyCharacter>(OtherActor);
 
+        //set the players last valid position
         if (player)
         {
             ActorNames.Add(player->GetActorLabel());
@@ -70,18 +71,18 @@ void ACheckpointActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
            
         }
 
-        APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+        APlayerController* playerController = Cast<APlayerController>(player->GetController());
+        
         if (playerController)
         {
-           playerStateRef = Cast<AMyPlayerState>(playerController->PlayerState);
-        }        
+            playerStateRef = Cast<AMyPlayerState>(playerController->PlayerState);
 
-        if (playerStateRef)
-        {
-            playerStateRef->ActivateCheckPoint();
+            if (playerStateRef)
+            {
+                playerStateRef->ActivateCheckPoint();
+            }
         }
     }
-
 
     if (HasAuthority())
     {

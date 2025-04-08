@@ -54,21 +54,6 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
                 //player->bFalling = true;
                 // set respawn offset of a random value
                 FVector respawnOffset = FVector(FMath::RandRange(-50, 50), FMath::RandRange(-50, 50), 0);
-
-
-                AMyPlayerState* playerState = Cast<AMyPlayerState>(player->GetPlayerState());
-                if (playerState)
-                {
-                    playerState->ReduceHealth();
-                    int health = playerState->GetHealth();
-
-                    //UE_LOG(LogTemp, Warning, TEXT("health reduced, new health: %d"), playerState->ReduceHealth());
-
-                  /*  if (health == 0)
-                    {
-                        playerState->KillPlayer();
-                    }*/
-                }
                 
                 // set location to last player location + offset
                 FVector respawnLocation = player->lastPos + respawnOffset;
@@ -78,6 +63,19 @@ void AFallOffLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
                 player->SetActorLocation(respawnLocation); // move player to new location
                 player->Client_PlaySound(); // play sound on respawn
             }
+        }
+    }
+
+    if (OtherActor)
+    {
+        auto player = Cast<AMyCharacter>(OtherActor);
+
+        AMyPlayerState* playerState = Cast<AMyPlayerState>(player->GetPlayerState());
+        if (playerState)
+        {
+            playerState->ReduceHealth();
+            int health = playerState->GetHealth();
+
         }
     }
 }

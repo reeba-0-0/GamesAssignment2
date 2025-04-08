@@ -15,13 +15,13 @@ class CHARACTERLABSTART54_API AMyPlayerState : public APlayerState
 	AMyPlayerState();
 public:
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	int currentHealth = 30;
 
 	UPROPERTY()
 	int maxHealth = 30;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	int currentCheckpoint = 0;
 
 	
@@ -53,19 +53,6 @@ public:
 	bool IsMaxCheckPoint();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	// server function for checkpoint activation
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerActivateCheckPoint();
-	//void ServerActivateCheckPoint_Implementation();
-	//bool ServerActivateCheckPoint_Validate();
-
-	// OnRep function for bReachedCheckpoint
-	UFUNCTION()
-	void OnRep_CheckpointReached();
-
-	/*UFUNCTION(NetMulticast, Reliable)
-	void MulticastActivateNiagaraEffect();*/
 
 	UFUNCTION()
 	void ReduceHealth();
