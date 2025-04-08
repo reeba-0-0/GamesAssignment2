@@ -13,13 +13,9 @@ void AMyGameStateBase::BeginPlay()
     
 }
 
-void AMyGameStateBase::IncrementPlayerCount()
+void AMyGameStateBase::UpdatePlayerConnectPlayers()
 {
-	// increment playerNum
-    if (HasAuthority())
-    {
-        connectedPlayers++;
-    }
+    connectedPlayers = PlayerArray.Num();
 }
 
 int AMyGameStateBase::GetConnectedPlayers()

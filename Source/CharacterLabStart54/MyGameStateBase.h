@@ -17,7 +17,7 @@ class CHARACTERLABSTART54_API AMyGameStateBase : public AGameStateBase
 
 public:
 	UFUNCTION()
-	void IncrementPlayerCount();
+	void UpdatePlayerConnectPlayers();
 
 	UFUNCTION()
 	int GetConnectedPlayers();
@@ -36,8 +36,7 @@ private:
 	bool bTimerFinished = false;
 
 protected:
-	UPROPERTY(ReplicatedUsing = OnRep_ConnectedPlayers)
-	int connectedPlayers = 0;
+	
 
 	UFUNCTION()
 	void OnRep_ConnectedPlayers();
@@ -57,4 +56,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void JoinGame(FString IPAddress);
 
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_ConnectedPlayers, BlueprintReadOnly)
+	int connectedPlayers = 0;
 };

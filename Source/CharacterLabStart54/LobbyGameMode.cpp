@@ -8,6 +8,8 @@ void ALobbyGameMode::MovePlayers()
 {
     gameStateRef = GetGameState<AMyGameStateBase>();
 
+    gameStateRef->UpdatePlayerConnectPlayers();
+
 	// check if playerNum == max
     if (gameStateRef && gameStateRef->MaxPlayersReached())
     {
