@@ -15,21 +15,20 @@ class CHARACTERLABSTART54_API AMyPlayerState : public APlayerState
 	AMyPlayerState();
 public:
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	int currentHealth = 30;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int maxHealth = 30;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	int currentCheckpoint = 0;
 
 	
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int maxCheckpoint = 3;
 
-	UPROPERTY(ReplicatedUsing = OnRep_CheckpointReached) // ensure proper client updates
-		bool bReachedCheckpoint = false;
+	bool bReachedCheckpoint = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = "true"))
 	class UNiagaraComponent* niagaraComponent;

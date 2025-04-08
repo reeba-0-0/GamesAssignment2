@@ -107,6 +107,10 @@ void AMyPlayerState::ReplenishHealth()
 
 bool AMyPlayerState::IsMaxCheckPoint()
 {
+    FString Output = FString((currentCheckpoint >= maxCheckpoint) ? "Is not max checkpoint" : "Is max checkpoint");
+
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, Output);
+
     return currentCheckpoint >= maxCheckpoint;
 }
 

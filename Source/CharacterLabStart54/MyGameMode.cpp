@@ -15,11 +15,12 @@ AMyGameMode::AMyGameMode()
 
 void AMyGameMode::BeginPlay()
 {
-    if (HasAuthority())
-    {
-        gameStateRef = GetGameState<AMyGameStateBase>();
-        StartCountdownWithDelay();
-    }
+    gameStateRef = GetGameState<AMyGameStateBase>();
+    StartCountdownWithDelay();   
+}
+
+void AMyGameMode::Tick(float DeltaTime)
+{
 }
 
 void AMyGameMode::StartCountdownWithDelay()
@@ -29,36 +30,29 @@ void AMyGameMode::StartCountdownWithDelay()
 
 void AMyGameMode::StartCountdown()
 {
-    if (HasAuthority())
+    UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), gameStateRef->countdownTime);
+
+    GetWorldTimerManager().SetTimer(winTimerHandle, this, &AMyGameMode::HasPlayerWon, 1.0f, true);
+    GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameMode::Lose, gameStateRef->countdownTime, false);
+    GetWorldTimerManager().SetTimer(displayTimerHandle, this, &AMyGameMode::UpdateTimerDisplay, 1.0f, true);    
+}
+
+void AMyGameMode::HasPlayerWon()
+{
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Countdown Started: %d seconds"), gameStateRef->countdownTime);
-
-        bool bSomeoneWon = false;
-
-        for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+        APlayerController* playerController = Iterator->Get();
+        if (playerController)
         {
-            APlayerController* playerController = Iterator->Get();
-            if (playerController)
+            AMyPlayerState* playerState = Cast<AMyPlayerState>(playerController->PlayerState);
+
+            if (playerState && playerState->IsMaxCheckPoint())
             {
-                AMyPlayerState* playerState = Cast<AMyPlayerState>(playerController->PlayerState);
-                if (playerState && playerState->IsMaxCheckPoint())
-                {
-                    UE_LOG(LogTemp, Warning, TEXT("Player %s reached the final checkpoint"), *playerController->GetName());
-                    bSomeoneWon = true;
-                    break;
-                }
+                UE_LOG(LogTemp, Warning, TEXT("Player %s reached the final checkpoint"), *playerController->GetName());
+                GetWorldTimerManager().ClearTimer(winTimerHandle);
+                Win();
+                break;
             }
-        }
-
-        if (bSomeoneWon)
-        {
-            Win();
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("No player reached final checkpoint. Starting lose timer."));
-            GetWorldTimerManager().SetTimer(gameTimerHandle, this, &AMyGameMode::Lose, gameStateRef->countdownTime, false);
-            GetWorldTimerManager().SetTimer(displayTimerHandle, this, &AMyGameMode::UpdateTimerDisplay, 1.0f, true);
         }
     }
 }

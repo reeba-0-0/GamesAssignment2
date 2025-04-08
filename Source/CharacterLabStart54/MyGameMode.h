@@ -18,6 +18,8 @@ class CHARACTERLABSTART54_API AMyGameMode : public AGameModeBase
 
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 public:
 
 	UFUNCTION()
@@ -28,6 +30,8 @@ public:
 
 	UFUNCTION()
 	void StartCountdown();
+
+	void HasPlayerWon();
 
 	//UFUNCTION()
 	//void EndGameTimer();
@@ -44,6 +48,7 @@ private:
 	FTimerHandle gameTimerHandle;
 	FTimerHandle delayTimerHandle;    
 	FTimerHandle displayTimerHandle;
+	FTimerHandle winTimerHandle;
 
 	class AMyPlayerState* playerStateRef;
 };
