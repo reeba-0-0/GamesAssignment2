@@ -19,12 +19,12 @@ void AMyPlayerState::ActivateCheckPoint()
         ReplenishHealth();
 
 
-        //LOGGING
+        // LOGGING
         UE_LOG(LogTemp, Log, TEXT("current checkpoint: %d"), currentCheckpoint);
 
-        FString Output = TEXT("Current Checkpoint: ") + FString::FromInt(currentCheckpoint);
+        //FString Output = TEXT("Current Checkpoint: ") + FString::FromInt(currentCheckpoint);
 
-        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Output);
+        //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Output);
     }
 }
 

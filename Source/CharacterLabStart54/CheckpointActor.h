@@ -37,6 +37,12 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerCallNiagaraEffect();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDeactivateNiagaraEffect();
+
+	UFUNCTION(Server, Reliable)
+	void ServerUncallNiagaraEffect();
+
 private:
 
 	UPROPERTY(EditAnywhere)

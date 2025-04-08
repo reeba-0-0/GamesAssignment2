@@ -103,6 +103,15 @@ void ACheckpointActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 
         player->lastPos = GetActorLocation();
     }
+
+    if (HasAuthority())
+    {
+        MulticastDeactivateNiagaraEffect();
+    }
+    else
+    {
+        ServerUncallNiagaraEffect();
+    }
 }
 
 void ACheckpointActor::ServerCallNiagaraEffect_Implementation()
@@ -115,6 +124,19 @@ void ACheckpointActor::MulticastActivateNiagaraEffect_Implementation()
     if (niagaraComponent)
     {
         niagaraComponent->SetActive(true); // trigger effect
+    }
+}
+
+void ACheckpointActor::ServerUncallNiagaraEffect_Implementation()
+{
+    MulticastDeactivateNiagaraEffect();
+}
+
+void ACheckpointActor::MulticastDeactivateNiagaraEffect_Implementation()
+{
+    if (niagaraComponent)
+    {
+        niagaraComponent->SetActive(false); // trigger effect
     }
 }
 

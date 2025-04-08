@@ -22,9 +22,9 @@ public:
 	UFUNCTION(Exec)
 	void PrintMessage(FString message);
 
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void HostGame();
 
-	UFUNCTION(Exec)
+	UFUNCTION(Exec, BlueprintCallable)
 	void JoinGame(FString IPAddress);
 };
